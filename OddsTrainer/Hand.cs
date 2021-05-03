@@ -10,76 +10,25 @@ namespace OddsTrainer
 {
     internal class Hand : IEnumerable<Card>
     {
-        public Card[] Cards { get; private set; }
-        public Hand(Card[] cards)
+        public List<Card> Cards { get; private set; }
+        public Hand()
         {
-            Cards = new Card[cards.Length];
-            for (int i = 0; i < Cards.Length; i++)
-            {
-                Cards[i] = cards[i];
-            }
+            Cards = new List<Card>();
         }
         #region Interface implementation
+        public IEnumerator<Card> GetEnumerator()
+        {
+            foreach (Card card in Cards)
+            {
+                yield return card;
+            }
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
-        public HandEnum GetEnumerator()
-        {
-            return new HandEnum(Cards);
-        }
-        IEnumerator<Card> IEnumerable<Card>.GetEnumerator()
-        {
-            return (IEnumerator<Card>)GetEnumerator();
-        }
-
-
-        public class HandEnum : IEnumerator
-        {
-            public Card[] Cards;
-
-            int position = -1;
-
-            public HandEnum(Card[] list)
-            {
-                Cards = list;
-            }
-
-            public bool MoveNext()
-            {
-                position++;
-                return (position < Cards.Length);
-            }
-
-            public void Reset()
-            {
-                position = -1;
-            }
-
-            object IEnumerator.Current
-            {
-                get
-                {
-                    return Current;
-                }
-            }
-
-            public Card Current
-            {
-                get
-                {
-                    try
-                    {
-                        return Cards[position];
-                    }
-                    catch (IndexOutOfRangeException)
-                    {
-                        throw new InvalidOperationException();
-                    }
-                }
-            }
-        }
         #endregion
         public void Draw(int howManyCards)
         {
@@ -88,45 +37,33 @@ namespace OddsTrainer
                 throw new ArgumentOutOfRangeException("The resulting hand size cannot exceed 2 cards.");
             }
             else for (int i = 0; i < howManyCards - this.Count(); i++)
-                {
+            {
                     var rand = new Random();
                     Card r = DeckDb.Deck[rand.Next(DeckDb.Deck.Count)];
                     DeckDb.Deck.Remove(r);
-                    Cards[i] = r;
-                }
+                    Cards.Add(r);
+            }
         }
         public void DrawSpecificCard(Card card)
         {
-            if (Cards[0] == null)
+            if (Cards.Count < 2)
             {
                 DeckDb.Deck.Remove(card);
-                Cards[0] = card;
-            }
-            else if (Cards[1] == null)
-            {
-                DeckDb.Deck.Remove(card);
-                Cards[1] = card;
+                Cards.Add(card);
             }
             else
             {
                 throw new InvalidOperationException("The hand is already full.");
             }
         }
-        public void InitCheck()
-        {
-            List<Card> lst = new();
-            lst.AddRange(DeckDb.Deck);
-            lst.AddRange(this);
-            Card[] comb = lst.ToArray();
-            comb.OrderBy(card => card.Value);
-        }
         public bool IsRoyalFlush(out string outCombination)
         {
             outCombination = "Royal Flush: ";
-            List<Card> lst = new();
-            lst.AddRange(DeckDb.Deck);
-            lst.AddRange(this);
-            Card[] comb = lst.ToArray();
+
+            List<Card> comb = new List<Card>();
+            comb.AddRange(DeckDb.Deck);
+            comb.AddRange(this);
+
 
             foreach (Card card in comb)
             {
@@ -163,10 +100,9 @@ namespace OddsTrainer
         }
         public bool IsStraightFlush(out string outCombination)
         {
-            List<Card> lst = new();
-            lst.AddRange(DeckDb.Deck);
-            lst.AddRange(this);
-            Card[] comb = lst.ToArray();
+            List<Card> comb = new List<Card>();
+            comb.AddRange(DeckDb.Deck);
+            comb.AddRange(this);
             outCombination = "Straight Flush: ";
             int cardCount = 0;
 
@@ -178,7 +114,7 @@ namespace OddsTrainer
                 {
                     foreach (Card a in comb)
                     {
-                        if (i == 1 && Array.Exists<Card>(comb, x => x.Value == 14 && x.Suit == suit))
+                        if (i == 1 && comb.Exists(x => x.Value == 14 && x.Suit == suit))
                         {
                             cardCount++;
                             outCombination += new Card(14, suit).Encode();
@@ -203,13 +139,13 @@ namespace OddsTrainer
             }
             return false;
         }
-        public bool IsFour(out string outCombination)
+        public bool IsQuads(out string outCombination)
         {
+            List<Card> comb = new List<Card>();
+            comb.AddRange(DeckDb.Deck);
+            comb.AddRange(this);
             outCombination = null;
-            List<Card> lst = new();
-            lst.AddRange(DeckDb.Deck);
-            lst.AddRange(this);
-            Card[] comb = lst.ToArray();
+            string outCombinationWithoutKicker = "Four of a kind: ";
             Card[] four = null;
             int cardCount = 0;
 
@@ -225,7 +161,7 @@ namespace OddsTrainer
                         if (a.Value == card.Value)
                         {
                             cardCount++;
-                            outCombination += a.Encode();
+                            outCombinationWithoutKicker += a.Encode();
                             four.Append(a);
                             found = true;
                             break;
@@ -239,10 +175,11 @@ namespace OddsTrainer
             {
                 comb.Except(four);
                 comb.OrderBy(a => a.Value);
-                //Need to extract the highest card to finish the 5 card combination after the FoaK
+                outCombination = outCombinationWithoutKicker + " with kicker " + comb.ElementAt(0);
                 return true;
             }
             return false;
         }
+
     }
 }

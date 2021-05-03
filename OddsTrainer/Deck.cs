@@ -8,7 +8,7 @@ namespace OddsTrainer
 {
     internal class DeckDb
     {
-        public static List<Card> Deck = new(52);
+        internal static List<Card> Deck = new(52);
         static public void DeckInitialize()
         {
             Deck.Add(new Card(2, Card.SuitType.Clubs));

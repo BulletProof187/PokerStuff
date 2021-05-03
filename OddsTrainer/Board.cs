@@ -9,7 +9,7 @@ namespace OddsTrainer
 {
     internal static class BoardDb
     {
-        private static Hand Board = null;
+        private static readonly Hand Board = null;
 
         public static void DrawBoard(int HowManyCards)
         {
@@ -28,9 +28,7 @@ namespace OddsTrainer
             DeckDb.Deck.Remove(r);
             Board.Append(r);
         }
-        public static void DrawSpecificBoardCard(Card card)
-        {
-            
-        }
+        //public static void DrawSpecificBoardCard(Card card)
+        
     }
 }

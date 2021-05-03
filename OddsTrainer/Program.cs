@@ -11,13 +11,11 @@ namespace OddsTrainer
         public static void Main(string[] args)
         {
             DeckDb.DeckInitialize();
-            Card[] CardArray = new Card[2];
-            Hand Hero = new(CardArray);
+            Hand Hero = new();
 
             Hero.Draw(2);
 
-            Card[] CardArray2 = new Card[2];
-            Hand Villain = new(CardArray2);
+            Hand Villain = new();
 
             int CardCounter = 0;
             foreach (Card card in Hero)

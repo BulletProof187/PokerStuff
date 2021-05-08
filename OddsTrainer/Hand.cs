@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static OddsTrainer.Card;
+using static OddsTrainer.BoardDb;
+using static OddsTrainer.DeckDb;
 
 namespace OddsTrainer
 {
@@ -30,17 +32,17 @@ namespace OddsTrainer
         }
 
         #endregion
-        public void Draw(int howManyCards)
+        public void Draw(int howManyCards = 1)
         {
             if (this.Count() + howManyCards >= 2)
             {
-                throw new ArgumentOutOfRangeException("The resulting hand size cannot exceed 2 cards.");
+                throw new ArgumentOutOfRangeException(nameof(howManyCards), "The resulting hand size cannot exceed 2 cards.");
             }
             else for (int i = 0; i < howManyCards - this.Count(); i++)
             {
                     var rand = new Random();
-                    Card r = DeckDb.Deck[rand.Next(DeckDb.Deck.Count)];
-                    DeckDb.Deck.Remove(r);
+                    Card r = Deck[rand.Next(Deck.Count)];
+                    Deck.Remove(r);
                     Cards.Add(r);
             }
         }
@@ -48,7 +50,7 @@ namespace OddsTrainer
         {
             if (Cards.Count < 2)
             {
-                DeckDb.Deck.Remove(card);
+                Deck.Remove(card);
                 Cards.Add(card);
             }
             else
@@ -56,22 +58,24 @@ namespace OddsTrainer
                 throw new InvalidOperationException("The hand is already full.");
             }
         }
-        public bool IsRoyalFlush(out string outCombination)
+        #region Combinations
+        public bool IsRoyalFlush(out string stringComb, out Card[] combCards)
         {
-            outCombination = "Royal Flush: ";
-
-            List<Card> comb = new List<Card>();
-            comb.AddRange(DeckDb.Deck);
+            stringComb = "Royal Flush: ";
+            List<Card> comb = new();
+            comb.AddRange(Board);
             comb.AddRange(this);
-
+            combCards = null;
 
             foreach (Card card in comb)
             {
+                combCards = null;
                 int cardCount = 0;
                 if (card.Value == 14)
                 {
                     cardCount++;
-                    outCombination += card.Encode();
+                    stringComb += card.Encode();
+                    combCards = combCards.Append(card).ToArray();
 
                     int i = 13;
                     bool found = false;
@@ -82,7 +86,8 @@ namespace OddsTrainer
                             if (a.Suit == card.Suit && a.Value == i)
                             {
                                 cardCount++;
-                                outCombination += a.Encode();
+                                stringComb += a.Encode();
+                                combCards = combCards.Append(a).ToArray();
                                 found = true;
                                 break;
                             }
@@ -98,18 +103,20 @@ namespace OddsTrainer
             return false;
 
         }
-        public bool IsStraightFlush(out string outCombination)
+        public bool IsStraightFlush(out string stringComb, out Card[] combCards)
         {
-            List<Card> comb = new List<Card>();
-            comb.AddRange(DeckDb.Deck);
+            List<Card> comb = new();
+            comb.AddRange(Board);
             comb.AddRange(this);
-            outCombination = "Straight Flush: ";
+            stringComb = "Straight Flush: ";
             int cardCount = 0;
+            combCards = null;
 
             foreach (SuitType suit in (SuitType[])Enum.GetValues(typeof(SuitType)))
             {
                 int i = 13;
                 bool found = false;
+                combCards = null;
                 do
                 {
                     foreach (Card a in comb)
@@ -117,35 +124,35 @@ namespace OddsTrainer
                         if (i == 1 && comb.Exists(x => x.Value == 14 && x.Suit == suit))
                         {
                             cardCount++;
-                            outCombination += new Card(14, suit).Encode();
+                            combCards = combCards.Append(a).ToArray();
+                            stringComb += new Card(14, suit).Encode();
                             found = true;
+                            if (cardCount == 5) return true;
                             break;
                         }
                         else if (a.Suit == suit && a.Value == i)
                         {
                             
                             cardCount++;
-                            outCombination += a.Encode();
+                            combCards = combCards.Append(a).ToArray();
+                            stringComb += a.Encode();
                             found = true;
+                            if (cardCount == 5) return true;                            
                             break;
                         }
                     }
                     i--;
                 } while (i > 0 && found);
             }
-            if (cardCount == 5)
-            {
-                return true;
-            }
             return false;
         }
-        public bool IsQuads(out string outCombination)
+        public bool IsQuads(out string stringComb)
         {
-            List<Card> comb = new List<Card>();
-            comb.AddRange(DeckDb.Deck);
+            List<Card> comb = new();
+            comb.AddRange(Board);
             comb.AddRange(this);
-            outCombination = null;
-            string outCombinationWithoutKicker = "Four of a kind: ";
+            stringComb = null;
+            string combWithoutKicker = "Four of a kind: ";
             Card[] four = null;
             int cardCount = 0;
 
@@ -157,12 +164,12 @@ namespace OddsTrainer
                 {
                     foreach (Card a in comb)
                     {
-                        four.Append(card);
+                        four = four.Append(card).ToArray();
                         if (a.Value == card.Value)
                         {
                             cardCount++;
-                            outCombinationWithoutKicker += a.Encode();
-                            four.Append(a);
+                            combWithoutKicker += a.Encode();
+                            four = four.Append(a).ToArray();
                             found = true;
                             break;
                         }
@@ -173,13 +180,17 @@ namespace OddsTrainer
             }
             if (cardCount == 4)
             {
-                comb.Except(four);
-                comb.OrderBy(a => a.Value);
-                outCombination = outCombinationWithoutKicker + " with kicker " + comb.ElementAt(0);
+                comb = comb.Except(four).ToList();
+                comb = comb.OrderBy(a => a.Value).ToList();
+                stringComb = combWithoutKicker + " with kicker " + comb.ElementAt(0);
                 return true;
             }
             return false;
         }
+        public bool IsFullHouse(out string stringComb)
+        {
 
+        }
+        #endregion
     }
 }

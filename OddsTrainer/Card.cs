@@ -6,25 +6,25 @@ namespace OddsTrainer
 {
     public class Card : IEquatable<Card>
     {
-        public int Value { get; private set; }
+        public enum EnumValue
+        {
+            Two = 2, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace
+        }
+        public EnumValue Value { get; internal set; }
         public enum SuitType
         {
             Spades, Hearts, Diamonds, Clubs
         }
-        public SuitType Suit { get; private set; }
-        public int CardId { get; private set; }
-        public Card(int value, SuitType suit)
+        public SuitType Suit { get; internal set; }
+        public Card(EnumValue value, SuitType suit)
         {
-            if (value < 1 || value > 14)
-                throw new ArgumentException("Cards' value can range between 1 and 14, where 11 is Jack, 12 is Queen, 13 is King, and 1 or 14 is Ace");
-            else
-                Suit = suit;
+            Suit = suit;
             Value = value;
-            CardId = GetHashCode();
         }
         public override int GetHashCode()
         {
-            return Value.GetHashCode() * ((int)Suit + 1).GetHashCode();
+            int hash = (int)Value * ((int)Suit + 1);
+            return hash.GetHashCode();
         }
         public override bool Equals(object obj)
         {
@@ -32,10 +32,41 @@ namespace OddsTrainer
             if (obj is not Card objAsCard) return false;
             else return Equals(objAsCard);
         }
+        public static bool operator== (Card obj1, Card obj2)
+        {
+            if (ReferenceEquals(obj1, obj2))
+            {
+                return true;
+            }
+            if (obj1 is null)
+            {
+                return false;
+            }
+            if (obj2 is null)
+            {
+                return false;
+            }
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator!= (Card obj1, Card obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
         public bool Equals(Card other)
         {
-            if (other == null) return false;
-            return (this.CardId.Equals(other.CardId));
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            return Value == other.Value &&
+                   Suit == other.Suit;
         }
 
         public Card(string input)
@@ -47,34 +78,35 @@ namespace OddsTrainer
 
             else
             {
-                if (!new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 't', 'Q', 'q', 'K', 'k', 'A', 'a' }.Contains(input[0]))
+                if (!new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 't', 'J', 'j', 'Q', 'q', 'K', 'k', 'A', 'a' }.Contains(input[0]))
                     throw new ArgumentException();
                 switch (input[0])
                 {
                     case 'T':
                     case 't':
-                        Value = 10;
+                        Value = (EnumValue)10;
                         break;
                     case 'J':
                     case 'j':
-                        Value = 11;
+                        Value = (EnumValue)11;
                         break;
                     case 'Q':
                     case 'q':
-                        Value = 12;
+                        Value = (EnumValue)12;
                         break;
                     case 'K':
                     case 'k':
-                        Value = 13;
+                        Value = (EnumValue)13;
                         break;
                     case 'A':
                     case 'a':
                     case '1':
-                        Value = 14;
+                        Value = (EnumValue)14;
+
                         break;
                     default:
                         string tmp = input.Remove(1);
-                        Value = int.Parse(tmp);
+                        Value = (EnumValue)int.Parse(tmp);
                         break;
                 }                 
 
@@ -105,31 +137,31 @@ namespace OddsTrainer
         public string Encode()
         {
             string encodedCard = "";
-            if (Value > 9)
+            if (Value > (EnumValue)9)
             {
                 switch (Value)
                 {
-                    case 10:
+                    case (EnumValue)10:
                         encodedCard += 'T';
                         break;
-                    case 11:
+                    case (EnumValue)11:
                         encodedCard += 'J';
                         break;
-                    case 12:
+                    case (EnumValue)12:
                         encodedCard += 'Q';
                         break;
-                    case 13:
+                    case (EnumValue)13:
                         encodedCard += 'K';
                         break;
-                    case 1:
-                    case 14:
+                    case (EnumValue)1:
+                    case (EnumValue)14:
                         encodedCard += 'A';
                         break;
                 }
             }
             else
             {
-                encodedCard += Value.ToString();
+                encodedCard += ((int)Value).ToString();
             }
             switch (Suit)
             {
@@ -152,23 +184,23 @@ namespace OddsTrainer
         {
             {
                 string output = "";
-                if (Value > 9)
+                if (Value > (EnumValue)9)
                 {
                     switch (Value)
                     {
-                        case 10:
+                        case (EnumValue)10:
                             output += "Ten";
                             break;
-                        case 11:
+                        case (EnumValue)11:
                             output += "Jack";
                             break;
-                        case 12:
+                        case (EnumValue)12:
                             output += "Queen";
                             break;
-                        case 13:
+                        case (EnumValue)13:
                             output += "King";
                             break;
-                        case 14:
+                        case (EnumValue)14:
                             output += "Ace";
                             break;
                     }
@@ -177,7 +209,7 @@ namespace OddsTrainer
                 {
                     output += Value;
                 }
-                output += " of " + System.Enum.GetName(typeof(SuitType), Suit);
+                output += " of " + Enum.GetName(typeof(SuitType), Suit);
                 return output;
             }
         }

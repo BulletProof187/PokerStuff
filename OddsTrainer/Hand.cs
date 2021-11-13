@@ -36,7 +36,7 @@ namespace OddsTrainer
 
         #endregion
         public static Hand Hero { get; private set; }
-        public static Hand Villain { get; private set; }
+        public static Hand Villain { get; private set; } //never used yet
         static Hand()
         {
             Hero = new Hand();

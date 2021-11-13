@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using static OddsTrainer.BoardConstructor;
-using static OddsTrainer.DeckModel;
-using static OddsTrainer.Hand;
+using static OddsTrainer.Trainer;
 
 
 namespace OddsTrainer
@@ -14,8 +10,23 @@ namespace OddsTrainer
 
         public static void Main(string[] args)
         {
-            ConsoleUI.UserInput("Margin 15", out _);
-            Console.ReadLine();
+            Mode = TrainingMode.None;
+            switch (Mode)
+            {
+                case TrainingMode.OutsCounter:
+                    OutsCounter();
+                    break;
+                case TrainingMode.CallFold:
+                    CallFold();
+                    break;
+                case TrainingMode.PotOdds:
+                    PotOdds();
+                    break;
+                default:
+                    Console.WriteLine("Lets start sum shit");
+                    ConsoleUI.UserInput(Console.ReadLine(), out string _);
+                    break;
+            }
         }
     }
 }

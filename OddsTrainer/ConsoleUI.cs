@@ -12,7 +12,7 @@ namespace OddsTrainer
     {
         public static void ShowModesList()
         {
-            Console.WriteLine("The program has 3 training modes. Enter one of the commands listed below to switch to the corresponding mode:");
+            Console.WriteLine("The program has 3 training modes. Enter one of the commands listed below to run the corresponding training:");
             Console.WriteLine();
             Console.WriteLine("Command: OutsCounter");
             Console.WriteLine("The basic outs counting trainer where the user is presented a hand and a board");
@@ -22,7 +22,7 @@ namespace OddsTrainer
             Console.WriteLine("The user is presented a hand and a board and is tasked to enter pot odds of the spot");
             Console.WriteLine("in either a percentage, decimal, basic fraction or relation format (e.g. \"33%\", \"0.33\", \"1/3\" or \"1:2\" are all accepted).");
             Console.WriteLine($"The margin of {errorMargin * 100}% or less is not considered an error.");
-            Console.WriteLine("It can be changed by entering \"Margin\" followed by space and a number (e.g. \"Margin 15\" will change the margin to 15%)");
+            Console.WriteLine("It can be changed by entering \"Margin\" followed by space and a number (e.g. \"Margin 15\" will change the error margin to 15%)");
             Console.WriteLine();
             Console.WriteLine("Command: CallFold");
             Console.WriteLine("The user is presented a hand and a board with a pot and is facing an all-in bet.");

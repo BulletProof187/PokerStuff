@@ -25,6 +25,8 @@ namespace OddsTrainer
         }
         public static void SetErrorMargin (float marginInPercents)
         {
+            if (marginInPercents < 0 || marginInPercents > 50)
+                Console.WriteLine("Margin should be positive and under 50%.");
             errorMargin = marginInPercents / 100;
             Console.WriteLine($"Error margin has been set to {MathF.Round(errorMargin * 100, 2)}%");
         }
@@ -33,6 +35,7 @@ namespace OddsTrainer
             numberOfTasks++;
             Board.Cards.Clear();
             Hero.Cards.Clear();
+            DeckModel.SetUpDeck();
             BuildTaskBoard();
             Hero.Draw(2);
         }
@@ -63,7 +66,7 @@ namespace OddsTrainer
             Console.WriteLine($"Your hand is {Hero}.");
             Console.WriteLine($"The board is {Board}.");
             Console.WriteLine($"Enter the number of cards suitable to improve the current combination.");
-            int outs = Hero.CountOuts();
+            int outs = Hero.CountOuts(out List<Card> outCards);
 
             ConsoleUI.UserInput(Console.ReadLine(), out string answer);
 
@@ -78,6 +81,11 @@ namespace OddsTrainer
                 {
                     Console.WriteLine("Incorrect answer. Keep practicing!");
                     Console.WriteLine($"The actual number of outs is {outs}");
+                    Console.WriteLine("The outs are:");
+                    foreach (Card card in outCards)
+                    {
+                        Console.WriteLine(card);
+                    }
                 }
         }
         public static void CallFold()
@@ -91,7 +99,7 @@ namespace OddsTrainer
             Console.WriteLine($"Please enter Call if the call is profitable in this chip EV spot, or enter Fold if calling is not profitable.");
 
             float outOdds;
-            int outs = Hero.CountOuts();
+            int outs = Hero.CountOuts(out List<Card> _);
 
             if (Board.Count() == 4)
             {
@@ -99,7 +107,7 @@ namespace OddsTrainer
             }
             else if (Board.Count() == 3)
             {
-                outOdds = outs / DeckModel.Deck.Count * (Hero.CountOuts() - 1) / (DeckModel.Deck.Count - 1);
+                outOdds = outs / DeckModel.Deck.Count * (Hero.CountOuts(out List<Card> _) - 1) / (DeckModel.Deck.Count - 1);
             }
             else throw new InvalidOperationException("The board size is invalid.");
 
@@ -142,7 +150,7 @@ namespace OddsTrainer
                 }
             }
         }
-        public static void PotOdds() //finish this you bitch!!!
+        public static void PotOdds()
         {
             SetUpNewTask();
 

@@ -7,7 +7,7 @@ using static OddsTrainer.Card;
 
 namespace OddsTrainer
 {
-    internal static class DeckModel
+    public static class DeckModel
     {
         public static List<Card> Deck { get; set; } 
         static DeckModel()

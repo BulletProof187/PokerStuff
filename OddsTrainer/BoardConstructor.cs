@@ -18,10 +18,7 @@ namespace OddsTrainer
         {
             Board = new Hand();
         }
-        public static void EmptyBoard()
-        {
-            
-        }
+
         #region Board textures
         public static void BoardWithPair(int boardSize = 3)
         {
@@ -192,7 +189,7 @@ namespace OddsTrainer
                     var rand3 = new Random();
                     EnumValue gapValue = (EnumValue)rand3.Next((int)cardValue + 1, (int)cardValue + boardSize - 1); //the gap can't be the 1st or last card of the sequence
 
-                    //pulling the next card
+                    //drawing the next card(s)
                     while (Board.Count() < boardSize)
                     {
                         if (cardValue != gapValue)

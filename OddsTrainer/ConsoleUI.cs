@@ -10,6 +10,7 @@ namespace OddsTrainer
 {
     static class ConsoleUI
     {
+        
         public static void ShowModesList()
         {
             Console.WriteLine("The program has 3 training modes. Enter one of the commands listed below to run the corresponding training:");
@@ -28,6 +29,7 @@ namespace OddsTrainer
             Console.WriteLine("The user is presented a hand and a board with a pot and is facing an all-in bet.");
             Console.WriteLine("The task is to enter \"call\" or \"fold\" accodring to its profitability in a basic chip EV situation");
             Console.WriteLine("assuming that any outs to improve the hand guarantee victory.");
+            Console.WriteLine();
 
         }
         static public void ShowCommandList()
@@ -66,6 +68,7 @@ namespace OddsTrainer
                 Console.WriteLine("In your current training mode you must enter the pot odds of the spot");
                 Console.WriteLine("in either a percentage, decimal, basic fraction or relation format");
                 Console.WriteLine("(e.g. \"33%\", \"0.33\", \"1/3\" or \"1:2\" are all accepted).");
+                Console.WriteLine();
             }
         }
         static public void ShowResults(int roundingAccuracy = 0)
@@ -74,6 +77,7 @@ namespace OddsTrainer
             Console.WriteLine($"Number of tasks: {numberOfTasks}");
             Console.WriteLine($"Number of correct answers: {numberOfCorrectAnswers}");
             Console.WriteLine($"Correct answer percentage: {results}%");
+            Console.WriteLine();
         }
         static public void EndSession()
         {
@@ -81,26 +85,40 @@ namespace OddsTrainer
             {
                 Console.WriteLine("The training session has not been started.");
                 Console.WriteLine("Please enter \"Modes\" command to see the training modes.");
+                Console.WriteLine();
             }
             else
             {
                 Mode = TrainingMode.None;
                 Console.WriteLine("The session has been ended.");
+                Console.WriteLine();
                 ShowResults();
                 numberOfTasks = 0;
                 numberOfCorrectAnswers = 0;
             }
         }
         static public void UserInput(string input, out string answer)
+        
         {
             answer = null;
             input = input.ToLower();
-            string firstPart = input.Split(' ').First();
-            string secondPart = input.Split(' ').Last();
-            if (!int.TryParse(secondPart, out int intInput))
+            string firstPart, secondPart;
+            if (input.Contains(' '))
+            {
+                firstPart = input.Split(' ').First();
+                secondPart = input.Split(' ').Last();
+            }
+            else
+            {
+                firstPart = input;
+                secondPart = "";
+            }
+            
+            if (secondPart != "" & !int.TryParse(secondPart, out int intInput))
             {
                 Console.WriteLine("Invalid input");
                 Console.WriteLine("Enter Help for command list");
+                Console.WriteLine();
             }
             bool hasInt = int.TryParse(firstPart, out int soleIntInput); //detecting sole int input
             
@@ -160,6 +178,7 @@ namespace OddsTrainer
                     Mode = TrainingMode.OutsCounter;
                     Console.WriteLine("OutsCounter training session has started.");
                     Console.WriteLine("Enter the number of outs to improve the existing hand. Good luck!");
+                    Console.WriteLine();
                     break;
                 case "potodds":
                     Mode = TrainingMode.PotOdds;
@@ -168,11 +187,13 @@ namespace OddsTrainer
                     Console.WriteLine("(e.g. \"33%\", \"0.33\", \"1/3\" or \"1:2\" are all accepted).");
                     Console.WriteLine($"The current error margin is set to {errorMargin * 100}%");
                     Console.WriteLine("Enter \"Margin\" followed by space and a number to change it (e.g. \"Margin 15\" will change the margin to 15%)");
+                    Console.WriteLine();
                     break;
                 case "callfold":
                     Mode = TrainingMode.CallFold;
                     Console.WriteLine("CallFold training session has started.");
                     Console.WriteLine("Enter \"call\" or \"fold\" accodring to the profitability in a basic chip EV situation.");
+                    Console.WriteLine();
                     break;
                 case "help":
                     ShowCommandList();
@@ -183,6 +204,7 @@ namespace OddsTrainer
                     else
                     {
                         Console.WriteLine("This command is only available in the CallFold mode.");
+                        Console.WriteLine();
                     }
                     break;
                 case "fold":
@@ -191,6 +213,7 @@ namespace OddsTrainer
                     else
                     {
                         Console.WriteLine("This command is only available in the CallFold mode.");
+                        Console.WriteLine();
                     }
                     break;
                 case "":
@@ -199,12 +222,21 @@ namespace OddsTrainer
                     else
                     {
                         Console.WriteLine("No valid command has been entered.");
+                        Console.WriteLine();
                         ShowCommandList();
                     }
                     break;
                 default:
-                    Console.WriteLine("No valid command has been entered.");
-                    ShowCommandList();
+                    if (int.TryParse(firstPart, out int intResult))
+                    {
+                        answer = intResult.ToString();
+                    }
+                    else
+                    {
+                        Console.WriteLine("No valid command has been entered.");
+                        Console.WriteLine();
+                        ShowCommandList(); 
+                    }
                     break;
             }
         }

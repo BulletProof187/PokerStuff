@@ -19,6 +19,18 @@ namespace OddsTrainer
         {
             HighCard, Pair, TwoPair, TheeOfAKind, Straight, Flush, FullHouse, Quads, StraightFlush, RoyalFlush
         }
+        public int Count
+        {
+            get 
+            {
+                int count = 0;
+                foreach (Card card in this)
+                {
+                    count++;
+                } 
+                return count;
+            }
+        }
         public CombEnum Comb { get; private set; }
         #region Interface implementation
         public IEnumerator<Card> GetEnumerator()
@@ -50,7 +62,7 @@ namespace OddsTrainer
             {
                 output += Cards[i].ToString();
                 if (i != Cards.Length - 1)
-                    output += ", ";
+                    output += " ";
             }
             return output;
         }
@@ -69,9 +81,9 @@ namespace OddsTrainer
             if (Deck.Remove(card))
                 Cards.Add(card);
             else
-                throw new InvalidOperationException($"There is no {card.Encode()} in the Deck.");
+                throw new InvalidOperationException($"There is no {card.ToString()} in the Deck.");
         }
-        public void Draw(string sCards)
+        public void Draw(string sCards) //enter with no spaces
         {
             while (sCards != null && sCards != "")
             {
@@ -80,7 +92,7 @@ namespace OddsTrainer
                 if (Deck.Remove(card))
                     Cards.Add(card);
                 else
-                    throw new InvalidOperationException($"There is no {card.Encode()} in the Deck."); 
+                    throw new InvalidOperationException($"There is no {card.ToString()} in the Deck."); 
             }
         }
         public string GetCombName()
@@ -112,7 +124,7 @@ namespace OddsTrainer
                 if (card.Value == (EnumValue)14)
                 {
                     cardCount++;
-                    stringComb += card.Encode();
+                    stringComb += card.ToString();
                     combCards = combCards.Append(card).ToArray();
 
                     int i = 13;
@@ -124,7 +136,7 @@ namespace OddsTrainer
                             if (a.Suit == card.Suit && a.Value == (EnumValue)i)
                             {
                                 cardCount++;
-                                stringComb += a.Encode();
+                                stringComb += a.ToString();
                                 combCards = combCards.Append(a).ToArray();
                                 found = true;
                                 break;
@@ -156,7 +168,7 @@ namespace OddsTrainer
                 foreach (Card card in comb)
                 {
                     int cardCount = 1;
-                    stringComb = $"Straight Flush: {card.Encode()}";
+                    stringComb = $"Straight Flush: {card.ToString()}";
                     combCards = Array.Empty<Card>();
                     combCards = combCards.Append(card).ToArray();
                     int i = (int)card.Value - 1;
@@ -164,14 +176,10 @@ namespace OddsTrainer
                     {
                         if (i == 1) i = 14;
                         Card a = comb.Find(x => (int)x.Value == i && x != card);
-                        if (a == null)
-                        {
-                            break;
-                        }
-                        else
+                        if (a != null)
                         {
                             combCards = combCards.Append(a).ToArray();
-                            stringComb += a.Encode();
+                            stringComb += a.ToString();
                             cardCount++;
                             i--;
                             if (cardCount == 5)
@@ -190,7 +198,7 @@ namespace OddsTrainer
                         if (cardsOfSuit[i].Value == cardsOfSuit[i + 1].Value)
                         {
                             combCards[i] = cardsOfSuit[i];
-                            stringComb += cardsOfSuit[i].Encode();
+                            stringComb += cardsOfSuit[i].ToString();
                             cardCount++;
                             if (cardCount == 5) return true;
                         }
@@ -221,11 +229,7 @@ namespace OddsTrainer
                 while (true)
                 {
                     Card a = quads.Find(x => x.Value == card.Value && x != card);
-                    if (a == null)
-                    {
-                        break;
-                    }
-                    else
+                    if (a != null)
                     {
                         combCards = combCards.Append(a).ToArray();
                         quads.Remove(a);
@@ -331,7 +335,7 @@ namespace OddsTrainer
             foreach (Card card in comb)
             {
                 int cardCount = 1;
-                stringComb = $"Straight: {card.Encode()}";
+                stringComb = $"Straight: {card.ToString()}";
                 combCards = Array.Empty<Card>();
                 combCards = combCards.Append(card).ToArray();
                 int i = (int)card.Value - 1;
@@ -339,14 +343,10 @@ namespace OddsTrainer
                 {
                     if (i == 1) i = 14;
                     Card a = comb.Find(x => (int)x.Value == i && x != card);
-                    if (a == null)
-                    {
-                        break;
-                    }
-                    else
+                    if (a != null)
                     {
                         combCards = combCards.Append(a).ToArray();
-                        stringComb += a.Encode();
+                        stringComb += a.ToString();
                         cardCount++;
                         i--;
                         if (cardCount == 5)
@@ -379,11 +379,7 @@ namespace OddsTrainer
                 while (true)
                 {
                     Card a = three.Find(x => x.Value == card.Value && x != card);
-                    if (a == null)
-                    {
-                        break;
-                    }
-                    else
+                    if (a != null)
                     {
                         combCards = combCards.Append(a).ToArray();
                         three.Remove(a);
@@ -391,12 +387,12 @@ namespace OddsTrainer
                         if (cardCount == 3)
                         {
                             three = three.OrderByDescending(z => z.Value).ToList();
-                            stringComb = $"Three of a kind: {a.Value}s with kickers ";
+                            stringComb = $"Three of a kind of {a.Value}s with kickers: ";
                             int i = 0; //to count 2 kickers
                             foreach (Card b in three)
                             {
                                 combCards = combCards.Append(b).ToArray();
-                                stringComb += b.Encode();
+                                stringComb += b.ToString();
                                 i++;
                                 if (i >= 2) break;
                             }
@@ -409,7 +405,7 @@ namespace OddsTrainer
             combCards = null;
             return false;
 
-        }
+        }//bugged
         public bool IsTwoPair(out string stringComb, out Card[] combCards)
         {
             List<Card> comb = new();
@@ -422,45 +418,43 @@ namespace OddsTrainer
                 List<Card> firstPair = new();
                 firstPair.Add(card);
 
-                foreach (Card a in comb)
+                Card a = comb.Find(x => x.Value == card.Value && x != card);
+                if (a != null)
                 {
-                    if (card.Value == a.Value && card != a)
+                    firstPair.Add(a);
+
+                    List<Card> combWithoutFirstPair = comb.Except(firstPair).ToList();
+                    foreach (Card card2 in combWithoutFirstPair)
                     {
-                        firstPair.Add(a);
-                        if (firstPair.Count == 2)
+                        List<Card> secondPair = new();
+                        secondPair.Add(card2);
+
+                        Card b = comb.Find(x => x.Value == card2.Value && x != card2);
+                        if (b != null)
                         {
-                            foreach (Card b in comb.Except(firstPair))
-                            {
-                                List<Card> secondPair = new();
-                                secondPair.Add(b);
-                                foreach (Card c in comb.Except(firstPair))
-                                {
-                                    if (b.Value == c.Value && b != c)
-                                    {
-                                        secondPair.Add(c);
-                                        if (secondPair.Count == 2)
-                                        {
-                                            combCards = null;
-                                            combCards = firstPair.ToArray();
-                                            combCards = combCards.Concat(secondPair).ToArray();
-                                            var combWithoutTwoPair = comb.Except(combCards);
-                                            combWithoutTwoPair = combWithoutTwoPair.OrderByDescending(x => x.Value).ToList();
-                                            Card kicker = combWithoutTwoPair.ElementAt(0);
-                                            stringComb = $"Two Pair: {firstPair[0].Value}s and {secondPair[0].Value}s with kicker: {kicker}";
-                                            combCards = combCards.Append(kicker).ToArray();
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
+                            secondPair.Add(b);
+                            List<Card> combWithoutBothPairs = comb.Except(secondPair).ToList();
+                            stringComb = $"Two Pair of {card.Value}s and {card2.Value}s with kicker ";
+                            combWithoutBothPairs = combWithoutBothPairs.OrderByDescending(y => y.Value).ToList();
+                            Card kicker = combWithoutBothPairs.First();
+                            stringComb += kicker.ToString();
+                            combCards = Array.Empty<Card>();
+                            combCards = combCards.Append(card).ToArray();
+                            combCards = combCards.Append(a).ToArray();
+                            combCards = combCards.Append(card2).ToArray();
+                            combCards = combCards.Append(b).ToArray();
+                            combCards = combCards.Append(kicker).ToArray();
+                            return true;
                         }
                     }
-                }
+                } 
+
+
             }
             stringComb = null;
             combCards = null;
             return false;
-        }
+        }//bugged
         public bool IsPair(out string stringComb, out Card[] combCards)
         {
             List<Card> comb = new();
@@ -471,12 +465,8 @@ namespace OddsTrainer
 
             foreach (Card card in comb)
             {
-                Card a = comb.Find(y => y.Value == card.Value && card != y);
-                if (a == null)
-                {
-                    break;
-                }
-                else
+                Card a = comb.Find(x => x.Value == card.Value && card != x);
+                if (a != null)
                 {
                     //determining kickers
                     combCards = Array.Empty<Card>();
@@ -485,12 +475,12 @@ namespace OddsTrainer
                     List<Card> combWithoutPair = comb;
                     combWithoutPair.Remove(a);
                     combWithoutPair.Remove(card);
-                    combWithoutPair = combWithoutPair.OrderByDescending(y => y.Value).ToList();
+                    combWithoutPair = combWithoutPair.OrderByDescending(z => z.Value).ToList();
                     stringComb += $"A Pair: {card.Value}s with kickers: ";
                     foreach (Card b in combWithoutPair)
                     {
                         combCards = combCards.Append(b).ToArray();
-                        stringComb += b.Encode();
+                        stringComb += b.ToString();
                         if (combCards.Length >= 5) break;
                     }
                     return true;
@@ -512,7 +502,7 @@ namespace OddsTrainer
             stringComb = "High Card: ";
             foreach (Card card in combCards)
             {
-                stringComb += card.Encode();
+                stringComb += card.ToString();
             }
             return combCards;
         }
@@ -661,11 +651,11 @@ namespace OddsTrainer
                 string otherComb = null;
                 foreach (Card card in combCards)
                 {
-                    comb += card.Encode();
+                    comb += card.ToString();
                 }
                 foreach (Card card in otherCombCards)
                 {
-                    otherComb += card.Encode();
+                    otherComb += card.ToString();
                 }
 
                 if (combCards == otherCombCards)
@@ -690,9 +680,9 @@ namespace OddsTrainer
             }
             throw new InvalidOperationException("Failed to determine match hands");
         }
-        public int CountOuts(bool villainCardsAreOuts = true)
+        public int CountOuts(out List<Card> outCards, bool villainCardsAreOuts = true)
         {
-            int outsCount = 0;
+            outCards = new List<Card>();
             CombEnum currentComb = DetermineComb();
 
             foreach (Card card in Deck)
@@ -703,9 +693,9 @@ namespace OddsTrainer
                 hand.Cards.Add(card);
 
                 CombEnum newComb = hand.DetermineComb();
-                if (newComb > currentComb)
+                if (newComb > currentComb && newComb != CombEnum.HighCard)
                 {
-                    outsCount++;
+                    outCards.Append(card);
                 }
             }
             if (villainCardsAreOuts)
@@ -720,12 +710,12 @@ namespace OddsTrainer
                     CombEnum newComb = hand.DetermineComb();
                     if (newComb > currentComb)
                     {
-                        outsCount++;
+                        outCards.Append(card);
                     }
                 }
             }
-            return outsCount;
-        }
+            return outCards.Count;
+        } //bugged af
         public int CountOuts(Hand opponent)
         {
             CombEnum heroComb = DetermineComb();

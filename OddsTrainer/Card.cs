@@ -134,7 +134,7 @@ namespace OddsTrainer
             }
 
         }
-        public string Encode()
+        public override string ToString()
         {
             string encodedCard = "";
             if (Value > (EnumValue)9)
@@ -166,21 +166,21 @@ namespace OddsTrainer
             switch (Suit)
             {
                 case SuitType.Clubs:
-                    encodedCard += 'c';
+                    encodedCard += '\u2663';
                     break;
                 case SuitType.Spades:
-                    encodedCard += 's';
+                    encodedCard += '\u2660';
                     break;
                 case SuitType.Hearts:
-                    encodedCard += 'h';
+                    encodedCard += '\u2665';
                     break;
                 case SuitType.Diamonds:
-                    encodedCard += 'd';
+                    encodedCard += '\u2666';
                     break;
             };
             return encodedCard;
         }
-        public override string ToString()
+        public string ToStringFull()
         {
             {
                 string output = "";

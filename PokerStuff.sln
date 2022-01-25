@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddsTrainer", "OddsTrainer\OddsTrainer.csproj", "{D6055097-2DAE-4575-86CC-3B1864CE7227}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddsTrainerTests", "OddsTrainerTests\OddsTrainerTests.csproj", "{A5BCB906-1698-498E-A869-66D64A33F044}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CombinationsTests", "NUnitTests\CombinationsTests.csproj", "{E58D7294-3ACF-4601-B55D-965D990BCC61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{D6055097-2DAE-4575-86CC-3B1864CE7227}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6055097-2DAE-4575-86CC-3B1864CE7227}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6055097-2DAE-4575-86CC-3B1864CE7227}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5BCB906-1698-498E-A869-66D64A33F044}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5BCB906-1698-498E-A869-66D64A33F044}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5BCB906-1698-498E-A869-66D64A33F044}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5BCB906-1698-498E-A869-66D64A33F044}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E58D7294-3ACF-4601-B55D-965D990BCC61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E58D7294-3ACF-4601-B55D-965D990BCC61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E58D7294-3ACF-4601-B55D-965D990BCC61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E58D7294-3ACF-4601-B55D-965D990BCC61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

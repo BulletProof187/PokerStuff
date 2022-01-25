@@ -57,66 +57,66 @@ namespace OddsTrainer.Tests
             }
         }
         #region DetermineCombTests
-        //[TestMethod()]
-        //public void IsTwoPairTestDetermineComb1()
-        //{
-        //    DeckModel.SetUpDeck();
+        [TestMethod()]
+        public void IsTwoPairTestDetermineComb1()
+        {
+            DeckModel.SetUpDeck();
 
-        //    Hand hand2 = new Hand();
+            Hand hand2 = new Hand();
 
-        //    hand2.Draw("2c2s");
-        //    BoardConstructor.Board.Draw("3s3hKd");
+            hand2.Draw("2c2s");
+            BoardConstructor.Board.Draw("3s3hKd");
 
-        //    if (hand2.DetermineComb() != Hand.CombEnum.TwoPair)
-        //    {
-        //        Assert.Fail();
-        //    }
-        //}
-        //[TestMethod()]
-        //public void IsTwoPairTestDetermineComb2()
-        //{
-        //    DeckModel.SetUpDeck();
+            if (hand2.DetermineComb() != Hand.CombEnum.TwoPair)
+            {
+                Assert.Fail();
+            }
+        }
+        [TestMethod()]
+        public void IsTwoPairTestDetermineComb2()
+        {
+            DeckModel.SetUpDeck();
 
-        //    Hand hand2 = new Hand();
+            Hand hand2 = new Hand();
 
-        //    hand2.Draw("9cKc");
-        //    BoardConstructor.Board.Draw("2s9hKd");
+            hand2.Draw("9cKc");
+            BoardConstructor.Board.Draw("2s9hKd");
 
-        //    if (hand2.DetermineComb() != Hand.CombEnum.TwoPair)
-        //    {
-        //        Assert.Fail();
-        //    }
-        //}
-        //[TestMethod()]
-        //public void IsTwoPairTestDetermineComb3()
-        //{
-        //    DeckModel.SetUpDeck();
+            if (hand2.DetermineComb() != Hand.CombEnum.TwoPair)
+            {
+                Assert.Fail();
+            }
+        }
+        [TestMethod()]
+        public void IsTwoPairTestDetermineComb3()
+        {
+            DeckModel.SetUpDeck();
 
-        //    Hand hand2 = new Hand();
+            Hand hand2 = new Hand();
 
-        //    hand2.Draw("9c9s");
-        //    BoardConstructor.Board.Draw("2s9hKd");
+            hand2.Draw("9c9s");
+            BoardConstructor.Board.Draw("2s9hKd");
 
-        //    if (hand2.DetermineComb() == Hand.CombEnum.TwoPair)
-        //    {
-        //        Assert.Fail();
-        //    }
-        //}
-        //[TestMethod()]
-        //public void IsTwoPairTestDetermineComb4()
-        //{
-        //    DeckModel.SetUpDeck();
+            if (hand2.DetermineComb() == Hand.CombEnum.TwoPair)
+            {
+                Assert.Fail();
+            }
+        }
+        [TestMethod()]
+        public void IsTwoPairTestDetermineComb4()
+        {
+            DeckModel.SetUpDeck();
 
-        //    Hand hand2 = new Hand();
+            Hand hand2 = new Hand();
 
-        //    hand2.Draw("9c9s");
-        //    BoardConstructor.Board.Draw("2s9h2d");
+            hand2.Draw("9c9s");
+            BoardConstructor.Board.Draw("2s9h2d");
 
-        //    if (hand2.DetermineComb() == Hand.CombEnum.TwoPair)
-        //    {
-        //        Assert.Fail();
-        //    }
-        //}
+            if (hand2.DetermineComb() == Hand.CombEnum.TwoPair)
+            {
+                Assert.Fail();
+            }
+        }
         #endregion
     }
 }

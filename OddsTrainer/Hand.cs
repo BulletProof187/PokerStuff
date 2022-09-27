@@ -93,7 +93,7 @@ namespace OddsTrainer
                 if (Deck.Remove(card))
                     Cards.Add(card);
                 else
-                    throw new InvalidOperationException($"There is no {card.ToString()} in the Deck."); 
+                    throw new InvalidOperationException($"There is no {card} in the Deck."); 
             }
         }
         public string GetCombName()
@@ -670,7 +670,7 @@ namespace OddsTrainer
                 CombEnum newComb = hand.DetermineComb();
                 if (newComb > currentComb && newComb != CombEnum.HighCard)
                 {
-                    outCards.Append(card);
+                    outCards.Add(card);
                 }
             }
             if (villainCardsAreOuts)
